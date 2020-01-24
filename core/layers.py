@@ -62,6 +62,7 @@ class Dense(Layer):
             self.params[p] = self.initializers[p](self.shapes[p])
         self.is_init = True
 
+
     @property
     def param_names(self):
         return 'w', 'b'
