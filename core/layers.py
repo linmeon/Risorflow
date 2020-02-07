@@ -1,5 +1,6 @@
 from core.initializer import XavierUniform
 from core.initializer import Zeros
+import numpy as np
 
 
 class Layer(object):
@@ -53,16 +54,24 @@ class Dense(Layer):
         if not self.is_init:
             self.shapes['w'][0] = inputs.shape[1]
             self.inputs = inputs
-        return inputs@self.params['w']+self.params['b']
-    def backward(self, grad):
+        return inputs @ self.params['w'] + self.params['b']
 
+    def backward(self, grad):
+        self.grads['w'] = self.inputs.T @ grad
+        self.grads['b'] = np.sum(grad, axis=0)
+        return grad @ self.params['w'].T
 
     def _init_params(self):
         for p in self.param_names:
             self.params[p] = self.initializers[p](self.shapes[p])
         self.is_init = True
 
-
     @property
     def param_names(self):
         return 'w', 'b'
+
+
+# class Layer(object):
+#     def __init__(self, name):
+#         self.name = name
+#         self.grads, self.params = None, None
